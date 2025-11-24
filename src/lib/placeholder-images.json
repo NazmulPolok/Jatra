@@ -1,3 +1,58 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A stunning landscape of mountains and a lake, representing adventure and travel.",
+      "imageUrl": "https://images.unsplash.com/photo-1526392060635-9d6019884377?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0cmF2ZWwlMjBsYW5kc2NhcGV8ZW58MHx8fHwxNzYzOTYxMDE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "travel landscape"
+    },
+    {
+      "id": "paris",
+      "description": "The Eiffel Tower in Paris, France.",
+      "imageUrl": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlaWZmZWwlMjB0b3dlcnxlbnwwfHx8fDE3NjM5MzQ2ODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "eiffel tower"
+    },
+    {
+      "id": "kyoto",
+      "description": "A traditional temple in Kyoto, Japan.",
+      "imageUrl": "https://images.unsplash.com/photo-1530634082454-f57b7d567b25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxqYXBhbiUyMHRlbXBsZXxlbnwwfHx8fDE3NjQwMDM3NjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "japan temple"
+    },
+    {
+      "id": "rome",
+      "description": "The Colosseum in Rome, Italy.",
+      "imageUrl": "https://images.unsplash.com/photo-1663143050642-69240b347b2b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2xvc3NldW18ZW58MHx8fHwxNzY0MDAzNzY1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "colosseum"
+    },
+    {
+      "id": "santorini",
+      "description": "The white buildings and blue domes of Santorini, Greece.",
+      "imageUrl": "https://images.unsplash.com/photo-1508855173839-a6d69c12573a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2FudG9yaW5pJTIwZ3JlZWNlfGVufDB8fHx8MTc2NDAwMzc2NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "santorini greece"
+    },
+    {
+      "id": "new-york",
+      "description": "The skyline of New York City.",
+      "imageUrl": "https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZXclMjB5b3JrfGVufDB8fHx8MTc2NDAwMzc2NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "new york"
+    },
+    {
+      "id": "cairo",
+      "description": "The pyramids of Giza in Cairo, Egypt.",
+      "imageUrl": "https://images.unsplash.com/photo-1544815521-80841127c00f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlZ3lwdCUyMHB5cmFtaWRzfGVufDB8fHx8MTc2NDAwMzc2NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "egypt pyramids"
+    },
+    {
+      "id": "user-avatar-1",
+      "description": "A placeholder for a user avatar.",
+      "imageUrl": "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM5Mjg3NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user-avatar-2",
+      "description": "A placeholder for another user avatar.",
+      "imageUrl": "https://images.unsplash.com/photo-1604072366595-e75dc92d6bdc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d29tYW4lMjBmYWNlfGVufDB8fHx8MTc2Mzk3NjU2M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman face"
+    }
+  ]
 }
