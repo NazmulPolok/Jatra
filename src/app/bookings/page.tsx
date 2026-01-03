@@ -22,11 +22,18 @@ const bookingTypes = [
   { value: "ships", label: "Ships", icon: Ship },
 ];
 
-function PassengerCounter() {
-    const [count, setCount] = React.useState(1);
+function PassengerCounter({
+  count,
+  setCount,
+  min = 0
+}: {
+  count: number;
+  setCount: (value: number) => void;
+  min?: number;
+}) {
     return (
         <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setCount(Math.max(1, count - 1))}>
+            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setCount(Math.max(min, count - 1))}>
                 <Minus className="h-4 w-4" />
             </Button>
             <Input type="text" readOnly value={count} className="w-12 text-center" />
@@ -116,6 +123,7 @@ function HotelDatePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
 
 
 function BookingForm() {
+    const [passengers, setPassengers] = React.useState(1);
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -136,7 +144,7 @@ function BookingForm() {
             </div>
             <div className="grid gap-2">
                 <Label>Passengers</Label>
-                <PassengerCounter />
+                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -159,6 +167,27 @@ function BookingForm() {
 }
 
 function HotelBookingForm() {
+    const [adults, setAdults] = React.useState(2);
+    const [children, setChildren] = React.useState(0);
+    const [rooms, setRooms] = React.useState(1);
+    const [childrenAges, setChildrenAges] = React.useState<number[]>([]);
+
+    React.useEffect(() => {
+        setChildrenAges(currentAges => {
+            const newAges = new Array(children).fill(6);
+            for(let i=0; i < Math.min(children, currentAges.length); i++) {
+                newAges[i] = currentAges[i];
+            }
+            return newAges;
+        });
+    }, [children]);
+
+    const handleAgeChange = (index: number, age: string) => {
+        const newAges = [...childrenAges];
+        newAges[index] = parseInt(age, 10);
+        setChildrenAges(newAges);
+    }
+    
     return (
         <div className="bg-white p-2 rounded-lg shadow-lg border-2 border-yellow-400">
             <form className="grid grid-cols-1 lg:grid-cols-12 gap-px">
@@ -177,10 +206,10 @@ function HotelBookingForm() {
                                 className="w-full justify-start text-left font-normal h-12 border-0"
                             >
                                 <User className="mr-2 h-4 w-4" />
-                                2 adults · 0 children · 1 room
+                                {adults} adults · {children} children · {rooms} room
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-80">
+                        <PopoverContent className="w-96">
                             <div className="grid gap-4">
                                 <div className="space-y-2">
                                     <h4 className="font-medium leading-none">Guests & Rooms</h4>
@@ -188,19 +217,47 @@ function HotelBookingForm() {
                                         Select number of guests and rooms.
                                     </p>
                                 </div>
-                                <div className="grid gap-2">
-                                    <div className="grid grid-cols-3 items-center gap-4">
+                                <div className="grid gap-4">
+                                    <div className="flex items-center justify-between">
                                         <Label htmlFor="adults">Adults</Label>
-                                        <PassengerCounter />
+                                        <PassengerCounter count={adults} setCount={setAdults} min={1} />
                                     </div>
-                                    <div className="grid grid-cols-3 items-center gap-4">
+                                    <div className="flex items-center justify-between">
                                         <Label htmlFor="children">Children</Label>
-                                        <PassengerCounter />
+                                        <PassengerCounter count={children} setCount={setChildren} min={0}/>
                                     </div>
-                                     <div className="grid grid-cols-3 items-center gap-4">
+                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="rooms">Rooms</Label>
-                                        <PassengerCounter />
+                                        <PassengerCounter count={rooms} setCount={setRooms} min={1}/>
                                     </div>
+
+                                    {children > 0 && (
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                            {
+                                                Array.from({length: children}).map((_, index) => (
+                                                     <div key={index} className="grid gap-2">
+                                                        <Select value={childrenAges[index]?.toString()} onValueChange={(value) => handleAgeChange(index, value)}>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Age" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {Array.from({length: 18}).map((_, age) => (
+                                                                    <SelectItem key={age} value={age.toString()}>{age} years old</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                     </div>
+                                                ))
+                                            }
+                                            </div>
+
+                                            <p className="text-sm text-muted-foreground">
+                                                To find a place to stay that fits your entire group along with correct prices, we need to know how old your children will be at check-out
+                                            </p>
+                                        </div>
+                                    )}
+
                                 </div>
                             </div>
                         </PopoverContent>
@@ -220,7 +277,7 @@ export default function BookingsPage() {
           <CardDescription>Find and book flights, hotels, trains, and more.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="flights" className="w-full">
+          <Tabs defaultValue="hotels" className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 {bookingTypes.map(({value, label, icon: Icon}) => (
                      <TabsTrigger key={value} value={value}>
