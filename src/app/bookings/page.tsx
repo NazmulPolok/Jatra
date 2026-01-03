@@ -172,11 +172,11 @@ function TrainBookingForm() {
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
-              <Input id="from" placeholder="New York (JFK)" />
+              <Input id="from" placeholder="New York (Penn Station)" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="to">To</Label>
-              <Input id="to" placeholder="Paris (CDG)" />
+              <Input id="to" placeholder="Washington (Union Station)" />
             </div>
             <div className="grid gap-2">
               <Label>Departure</Label>
@@ -197,6 +197,10 @@ function TrainBookingForm() {
                         <SelectItem value="first">First Class</SelectItem>
                     </SelectContent>
                 </Select>
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="train-company">Train Company Name</Label>
+                <Input id="train-company" placeholder="e.g. Amtrak" />
             </div>
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
