@@ -189,7 +189,7 @@ function HotelBookingForm() {
     }
     
     return (
-        <div className="bg-white p-2 rounded-lg shadow-lg border-2 border-primary">
+        <div className="bg-card p-2 rounded-lg shadow-lg border">
             <form className="grid grid-cols-1 lg:grid-cols-12 gap-px">
                 <div className="relative lg:col-span-5">
                     <Bed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -299,6 +299,45 @@ function BusBookingForm() {
     );
 }
 
+function ShipBookingForm() {
+    const [passengers, setPassengers] = React.useState(1);
+    return (
+        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div className="grid gap-2">
+              <Label htmlFor="from">From</Label>
+              <Input id="from" placeholder="e.g., Miami Port" />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="to">To</Label>
+              <Input id="to" placeholder="e.g., Nassau, Bahamas" />
+            </div>
+            <div className="grid gap-2">
+              <Label>Departure</Label>
+              <DatePicker />
+            </div>
+            <div className="grid gap-2">
+                <Label>Passengers</Label>
+                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
+            </div>
+            <div className="grid gap-2">
+                <Label>Class</Label>
+                <Select>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Business" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="business">Business</SelectItem>
+                        <SelectItem value="first">First Class</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="lg:col-span-2">
+                 <Button type="submit" className="w-full h-full">Search</Button>
+            </div>
+        </form>
+    );
+}
+
 export default function BookingsPage() {
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -331,7 +370,7 @@ export default function BookingsPage() {
                 <BusBookingForm />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
-                <BookingForm />
+                <ShipBookingForm />
             </TabsContent>
 
           </Tabs>
