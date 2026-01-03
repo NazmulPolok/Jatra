@@ -167,8 +167,7 @@ function BookingForm() {
 }
 
 function TrainBookingForm() {
-    const [adults, setAdults] = React.useState(1);
-    const [children, setChildren] = React.useState(0);
+    const [passengers, setPassengers] = React.useState(1);
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -188,12 +187,8 @@ function TrainBookingForm() {
               <DatePicker />
             </div>
              <div className="grid gap-2">
-                <Label>Adults</Label>
-                <PassengerCounter count={adults} setCount={setAdults} min={1}/>
-            </div>
-             <div className="grid gap-2">
-                <Label>Children</Label>
-                <PassengerCounter count={children} setCount={setChildren} min={0}/>
+                <Label>Passengers</Label>
+                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -208,7 +203,7 @@ function TrainBookingForm() {
                     </SelectContent>
                 </Select>
             </div>
-            <div>
+            <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
             </div>
         </form>
@@ -349,8 +344,7 @@ function BusBookingForm() {
 }
 
 function ShipBookingForm() {
-    const [adults, setAdults] = React.useState(1);
-    const [children, setChildren] = React.useState(0);
+    const [passengers, setPassengers] = React.useState(1);
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -366,12 +360,8 @@ function ShipBookingForm() {
               <DatePicker />
             </div>
             <div className="grid gap-2">
-                <Label>Adults</Label>
-                <PassengerCounter count={adults} setCount={setAdults} min={1}/>
-            </div>
-            <div className="grid gap-2">
-                <Label>Children</Label>
-                <PassengerCounter count={children} setCount={setChildren} min={0}/>
+                <Label>Passengers</Label>
+                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -433,3 +423,5 @@ export default function BookingsPage() {
     </div>
   )
 }
+
+    
