@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { TripoLogo } from '@/components/icons/logo';
+import { JatraLogo } from '@/components/icons/logo';
 
 const navLinks = [
   { href: '/destinations', label: 'Destinations', icon: Map },
@@ -41,8 +41,8 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
         >
-          <TripoLogo />
-          <span className="sr-only">Tripo</span>
+          <JatraLogo />
+          <span className="sr-only">Jatra</span>
         </Link>
         {navLinks.map(({ href, label }) => (
           <Link
@@ -67,8 +67,8 @@ export default function Header() {
               href="/"
               className="flex items-center gap-2 text-lg font-semibold"
             >
-              <TripoLogo />
-              <span className="sr-only">Tripo</span>
+              <JatraLogo />
+              <span className="sr-only">Jatra</span>
             </Link>
             {navLinks.map(({ href, label, icon: Icon }) => (
               <Link

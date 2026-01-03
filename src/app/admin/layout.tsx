@@ -23,7 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { TripoLogo } from '../..//components/icons/logo';
+import { JatraLogo } from '../..//components/icons/logo';
 
 const adminNavLinks = [
     { href: '/admin', label: 'Dashboard', icon: Home },
@@ -47,8 +47,8 @@ export default function AdminLayout({
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <TripoLogo />
-              <span className="sr-only">Tripo</span>
+              <JatraLogo />
+              <span className="sr-only">Jatra</span>
             </Link>
           </div>
           <div className="flex-1">

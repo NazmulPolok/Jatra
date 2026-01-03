@@ -5,7 +5,7 @@ import Footer from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Tripo',
+  title: 'Jatra',
   description: 'Your personalized travel guide.',
 };
 

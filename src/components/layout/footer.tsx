@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { TripoLogo } from '@/components/icons/logo';
+import { JatraLogo } from '@/components/icons/logo';
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-block">
-              <TripoLogo />
+              <JatraLogo />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Your personalized travel guide.
@@ -39,7 +39,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="py-6 text-center text-sm text-muted-foreground border-t">
-          &copy; {new Date().getFullYear()} Tripo, Inc. All rights reserved.
+          &copy; {new Date().getFullYear()} Jatra, Inc. All rights reserved.
         </div>
       </div>
     </footer>

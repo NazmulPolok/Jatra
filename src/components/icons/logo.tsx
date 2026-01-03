@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export function TripoLogo(props: SVGProps<SVGSVGElement>) {
+export function JatraLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <div className="flex items-center justify-center gap-2" {...props}>
       <svg
@@ -19,7 +19,7 @@ export function TripoLogo(props: SVGProps<SVGSVGElement>) {
         <circle cx="12" cy="10" r="3" />
       </svg>
       <span className="font-headline text-2xl font-bold text-primary">
-        Tripo
+        Jatra
       </span>
     </div>
   );

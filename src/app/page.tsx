@@ -29,7 +29,7 @@ export default function Home() {
             Discover Your Next Adventure
           </h1>
           <p className="max-w-[600px] text-gray-200 md:text-xl mt-4">
-            Tripo helps you find the perfect destinations and create personalized itineraries. Your journey begins here.
+            Jatra helps you find the perfect destinations and create personalized itineraries. Your journey begins here.
           </p>
           <div className="mt-6">
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">

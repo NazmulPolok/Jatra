@@ -22,7 +22,7 @@ export default function BookingHistoryPage() {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline text-3xl">Booking History</CardTitle>
-                <CardDescription>A record of all your past bookings with Tripo.</CardDescription>
+                <CardDescription>A record of all your past bookings with Jatra.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Table>

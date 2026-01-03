@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { TripoLogo } from "@/components/icons/logo"
+import { JatraLogo } from "@/components/icons/logo"
 
 export default function LoginPage() {
   return (
@@ -18,7 +18,7 @@ export default function LoginPage() {
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-                <TripoLogo />
+                <JatraLogo />
             </div>
           <CardTitle className="text-2xl font-headline">Login</CardTitle>
           <CardDescription>
