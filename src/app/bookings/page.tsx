@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User, PersonStanding } from "lucide-react"
+import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User, PersonStanding, Search } from "lucide-react"
 import * as React from 'react';
 import { DateRange } from "react-day-picker"
 
@@ -182,11 +182,11 @@ function TrainBookingForm() {
               <Label>Departure</Label>
               <DatePicker />
             </div>
-            <div className="grid gap-2">
+             <div className="grid gap-2">
                 <Label htmlFor="train-company">Train Company Name</Label>
                 <Input id="train-company" placeholder="e.g. Amtrak" />
             </div>
-             <div className="grid gap-2">
+            <div className="grid gap-2">
                 <Label>Passengers</Label>
                 <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
@@ -234,14 +234,14 @@ function HotelBookingForm() {
     return (
         <div className="bg-card p-2 rounded-lg shadow-lg border">
             <form className="grid grid-cols-1 lg:grid-cols-12 gap-px">
-                <div className="relative lg:col-span-5">
+                <div className="relative lg:col-span-4">
                     <Bed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input id="destination" placeholder="Dhaka, Bangladesh" className="h-12 pl-10 border-0 focus-visible:ring-0" />
                 </div>
                 <div className="lg:col-span-3">
                     <HotelDatePicker />
                 </div>
-                <div className="relative lg:col-span-4">
+                <div className="relative lg:col-span-3">
                      <Popover>
                         <PopoverTrigger asChild>
                             <Button
@@ -305,6 +305,12 @@ function HotelBookingForm() {
                             </div>
                         </PopoverContent>
                     </Popover>
+                </div>
+                <div className="lg:col-span-2">
+                     <Button type="submit" className="w-full h-12 rounded-l-none">
+                        <Search className="h-5 w-5 mr-2" />
+                        Search
+                    </Button>
                 </div>
             </form>
         </div>
