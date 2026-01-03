@@ -189,7 +189,7 @@ function HotelBookingForm() {
     }
     
     return (
-        <div className="bg-white p-2 rounded-lg shadow-lg border-2 border-yellow-400">
+        <div className="bg-white p-2 rounded-lg shadow-lg border-2 border-primary">
             <form className="grid grid-cols-1 lg:grid-cols-12 gap-px">
                 <div className="relative lg:col-span-5">
                     <Bed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
