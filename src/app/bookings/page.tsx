@@ -194,10 +194,9 @@ function TrainBookingForm() {
                 <Label>Class</Label>
                 <Select>
                     <SelectTrigger>
-                        <SelectValue placeholder="Economy" />
+                        <SelectValue placeholder="Business" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="economy">Economy</SelectItem>
                         <SelectItem value="business">Business</SelectItem>
                         <SelectItem value="first">First Class</SelectItem>
                     </SelectContent>
@@ -423,5 +422,3 @@ export default function BookingsPage() {
     </div>
   )
 }
-
-    
