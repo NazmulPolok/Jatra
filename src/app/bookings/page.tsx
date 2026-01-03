@@ -183,10 +183,6 @@ function TrainBookingForm() {
               <DatePicker />
             </div>
              <div className="grid gap-2">
-              <Label>Return</Label>
-              <DatePicker />
-            </div>
-             <div className="grid gap-2">
                 <Label>Passengers</Label>
                 <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
