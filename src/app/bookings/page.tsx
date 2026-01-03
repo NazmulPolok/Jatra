@@ -44,7 +44,7 @@ function PassengerCounter({
     )
 }
 
-function DatePicker() {
+function DatePicker({label = "Pick a date"}: {label?: string}) {
   const [date, setDate] = React.useState<Date>()
 
   return (
@@ -58,7 +58,7 @@ function DatePicker() {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? format(date, "PPP") : <span>{label}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
@@ -268,6 +268,37 @@ function HotelBookingForm() {
     )
 }
 
+function BusBookingForm() {
+    const [passengers, setPassengers] = React.useState(1);
+    return (
+        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div className="grid gap-2">
+              <Label htmlFor="from">From</Label>
+              <Input id="from" placeholder="e.g. New York" />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="to">To</Label>
+              <Input id="to" placeholder="e.g. Boston" />
+            </div>
+            <div className="grid gap-2">
+              <Label>Date</Label>
+              <DatePicker />
+            </div>
+            <div className="grid gap-2">
+                <Label>Passengers</Label>
+                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
+            </div>
+             <div className="grid gap-2">
+                <Label htmlFor="bus-company">Bus Company Name</Label>
+                <Input id="bus-company" placeholder="e.g. Greyhound" />
+            </div>
+            <div className="lg:col-span-2">
+                 <Button type="submit" className="w-full h-full">Search</Button>
+            </div>
+        </form>
+    );
+}
+
 export default function BookingsPage() {
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -297,7 +328,7 @@ export default function BookingsPage() {
                 <HotelBookingForm />
             </TabsContent>
             <TabsContent value="buses" className="mt-6">
-                <BookingForm />
+                <BusBookingForm />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
                 <BookingForm />
