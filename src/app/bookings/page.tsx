@@ -182,6 +182,10 @@ function TrainBookingForm() {
               <Label>Departure</Label>
               <DatePicker />
             </div>
+            <div className="grid gap-2">
+                <Label htmlFor="train-company">Train Company Name</Label>
+                <Input id="train-company" placeholder="e.g. Amtrak" />
+            </div>
              <div className="grid gap-2">
                 <Label>Passengers</Label>
                 <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
@@ -197,10 +201,6 @@ function TrainBookingForm() {
                         <SelectItem value="first">First Class</SelectItem>
                     </SelectContent>
                 </Select>
-            </div>
-            <div className="grid gap-2">
-                <Label htmlFor="train-company">Train Company Name</Label>
-                <Input id="train-company" placeholder="e.g. Amtrak" />
             </div>
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
@@ -328,12 +328,12 @@ function BusBookingForm() {
               <DatePicker />
             </div>
             <div className="grid gap-2">
-                <Label>Passengers</Label>
-                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
-            </div>
-             <div className="grid gap-2">
                 <Label htmlFor="bus-company">Bus Company Name</Label>
                 <Input id="bus-company" placeholder="e.g. Greyhound" />
+            </div>
+            <div className="grid gap-2">
+                <Label>Passengers</Label>
+                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
@@ -358,6 +358,10 @@ function ShipBookingForm() {
               <Label>Departure</Label>
               <DatePicker />
             </div>
+             <div className="grid gap-2">
+                <Label htmlFor="ship-company">Ship Company Name</Label>
+                <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
+            </div>
             <div className="grid gap-2">
                 <Label>Passengers</Label>
                 <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
@@ -373,10 +377,6 @@ function ShipBookingForm() {
                         <SelectItem value="first">First Class</SelectItem>
                     </SelectContent>
                 </Select>
-            </div>
-             <div className="grid gap-2">
-                <Label htmlFor="ship-company">Ship Company Name</Label>
-                <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
             </div>
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
