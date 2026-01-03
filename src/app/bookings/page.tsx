@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User } from "lucide-react"
+import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User, PersonStanding } from "lucide-react"
 import * as React from 'react';
 import { DateRange } from "react-day-picker"
 
@@ -166,6 +166,55 @@ function BookingForm() {
     );
 }
 
+function TrainBookingForm() {
+    const [adults, setAdults] = React.useState(1);
+    const [children, setChildren] = React.useState(0);
+    return (
+        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div className="grid gap-2">
+              <Label htmlFor="from">From</Label>
+              <Input id="from" placeholder="New York (JFK)" />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="to">To</Label>
+              <Input id="to" placeholder="Paris (CDG)" />
+            </div>
+            <div className="grid gap-2">
+              <Label>Departure</Label>
+              <DatePicker />
+            </div>
+             <div className="grid gap-2">
+              <Label>Return</Label>
+              <DatePicker />
+            </div>
+             <div className="grid gap-2">
+                <Label>Adults</Label>
+                <PassengerCounter count={adults} setCount={setAdults} min={1}/>
+            </div>
+             <div className="grid gap-2">
+                <Label>Children</Label>
+                <PassengerCounter count={children} setCount={setChildren} min={0}/>
+            </div>
+            <div className="grid gap-2">
+                <Label>Class</Label>
+                <Select>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Economy" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="economy">Economy</SelectItem>
+                        <SelectItem value="business">Business</SelectItem>
+                        <SelectItem value="first">First Class</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div>
+                 <Button type="submit" className="w-full h-full">Search</Button>
+            </div>
+        </form>
+    );
+}
+
 function HotelBookingForm() {
     const [adults, setAdults] = React.useState(2);
     const [children, setChildren] = React.useState(0);
@@ -300,7 +349,8 @@ function BusBookingForm() {
 }
 
 function ShipBookingForm() {
-    const [passengers, setPassengers] = React.useState(1);
+    const [adults, setAdults] = React.useState(1);
+    const [children, setChildren] = React.useState(0);
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -316,8 +366,12 @@ function ShipBookingForm() {
               <DatePicker />
             </div>
             <div className="grid gap-2">
-                <Label>Passengers</Label>
-                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
+                <Label>Adults</Label>
+                <PassengerCounter count={adults} setCount={setAdults} min={1}/>
+            </div>
+            <div className="grid gap-2">
+                <Label>Children</Label>
+                <PassengerCounter count={children} setCount={setChildren} min={0}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -361,7 +415,7 @@ export default function BookingsPage() {
                 <BookingForm />
             </TabsContent>
             <TabsContent value="trains" className="mt-6">
-                <BookingForm />
+                <TrainBookingForm />
             </TabsContent>
             <TabsContent value="hotels" className="mt-6">
                 <HotelBookingForm />
