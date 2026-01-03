@@ -374,6 +374,10 @@ function ShipBookingForm() {
                     </SelectContent>
                 </Select>
             </div>
+             <div className="grid gap-2">
+                <Label htmlFor="ship-company">Ship Company Name</Label>
+                <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
+            </div>
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
             </div>
