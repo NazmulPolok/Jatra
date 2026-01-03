@@ -131,6 +131,66 @@ export const destinations: Destination[] = [
     ],
     estimatedCost: 1200,
     imageId: 'cairo',
+  },
+  {
+    id: '7',
+    slug: 'dhaka-bangladesh',
+    name: 'Dhaka',
+    country: 'Bangladesh',
+    description: 'A bustling city of rickshaws, vibrant culture, and rich history.',
+    longDescription: 'Dhaka, the capital of Bangladesh, is a mega-city of vibrant chaos and cultural richness. Known as the "Rickshaw Capital of the World," its streets are a colorful tapestry of life. Explore historic Old Dhaka with its Mughal-era Lalbagh Fort, the beautiful Ahsan Manzil (Pink Palace), and the bustling Sadarghat river port.',
+    attractions: [
+      { name: 'Lalbagh Fort', description: 'An incomplete 17th-century Mughal fort complex.' },
+      { name: 'Ahsan Manzil', description: 'A majestic pink palace on the banks of the Buriganga River.' },
+      { name: 'Sadarghat River Port', description: 'A chaotic but fascinating hub of riverine activity.' },
+    ],
+    suggestedItinerary: [
+      { day: 1, title: 'Old Dhaka Exploration', description: 'Arrive and dive into the heart of Old Dhaka. Visit Lalbagh Fort and Ahsan Manzil, and take a boat ride from Sadarghat.' },
+      { day: 2, title: 'Culture and Crafts', description: 'Visit the National Museum and explore the craft markets for unique souvenirs.' },
+      { day: 3, title: 'Modern Dhaka & Departure', description: 'Experience the modern side of the city in Gulshan and Banani before departing.' },
+    ],
+    estimatedCost: 800,
+    imageId: 'dhaka',
+  },
+  {
+    id: '8',
+    slug: 'jakarta-indonesia',
+    name: 'Jakarta',
+    country: 'Indonesia',
+    description: 'A dynamic metropolis where modern skyscrapers meet historic districts.',
+    longDescription: 'Jakarta, Indonesia\'s massive capital, sits on the northwest coast of the island of Java. A historic mix of cultures – Javanese, Malay, Chinese, Arab, Indian and European – has influenced its architecture, language and cuisine. The old town, Kota Tua, is home to Dutch colonial buildings, Glodok (Jakarta’s Chinatown) and the old port of Sunda Kelapa, where traditional wooden schooners dock.',
+    attractions: [
+      { name: 'National Monument (Monas)', description: 'A 132m-tall monument in Merdeka Square, symbolizing the fight for Indonesia.' },
+      { name: 'Kota Tua (Old Town)', description: 'Explore the Dutch colonial-era heart of the city.' },
+      { name: 'Istiqlal Mosque and Jakarta Cathedral', description: 'Two major religious sites standing side-by-side, symbolizing harmony.' },
+    ],
+    suggestedItinerary: [
+      { day: 1, title: 'Arrival and National Monument', description: 'Arrive in Jakarta. Visit Merdeka Square and see the iconic National Monument (Monas).' },
+      { day: 2, title: 'History and Culture', description: 'Explore the historic Kota Tua district and visit the Istiqlal Mosque and Jakarta Cathedral.' },
+      { day: 3, title: 'Modern Jakarta', description: 'Experience modern Jakarta with shopping at Grand Indonesia and exploring the trendy Kemang area.' },
+    ],
+    estimatedCost: 1100,
+    imageId: 'jakarta',
+  },
+  {
+    id: '9',
+    slug: 'kuala-lumpur-malaysia',
+    name: 'Kuala Lumpur',
+    country: 'Malaysia',
+    description: 'A city of contrasts with the Petronas Towers and Batu Caves.',
+    longDescription: 'Kuala Lumpur is the capital of Malaysia. Its modern skyline is dominated by the 451m-tall Petronas Twin Towers, a pair of glass-and-steel-clad skyscrapers with Islamic motifs. The towers also offer a public skybridge and observation deck. The city is also home to British colonial-era landmarks such as the Kuala Lumpur Railway Station and the Sultan Abdul Samad Building.',
+    attractions: [
+      { name: 'Petronas Twin Towers', description: 'Iconic twin skyscrapers with a skybridge and observation deck.' },
+      { name: 'Batu Caves', description: 'A limestone hill that has a series of caves and cave temples, guarded by a large statue of Murugan.' },
+      { name: 'Merdeka Square (Independence Square)', description: 'The historical heart of the city with colonial-era buildings.' },
+    ],
+    suggestedItinerary: [
+      { day: 1, title: 'City Icons', description: 'Arrive and visit the iconic Petronas Twin Towers and explore the surrounding KLCC Park.' },
+      { day: 2, title: 'Cultural and Natural Wonders', description: 'Take a trip to the impressive Batu Caves in the morning. In the afternoon, explore Merdeka Square and the Sultan Abdul Samad Building.' },
+      { day: 3, title: 'Shopping and Food', description: 'Discover the vibrant Bukit Bintang shopping district and enjoy the street food at Jalan Alor.' },
+    ],
+    estimatedCost: 1300,
+    imageId: 'kuala-lumpur',
   }
 ];
 
