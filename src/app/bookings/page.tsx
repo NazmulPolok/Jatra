@@ -389,10 +389,16 @@ function ShipBookingForm({passengers, setPassengers}: {passengers: number, setPa
 
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = React.useState("hotels");
-  const [flightPassengers, setFlightPassengers] = React.useState(1);
-  const [trainPassengers, setTrainPassengers] = React.useState(1);
-  const [busPassengers, setBusPassengers] = React.useState(1);
-  const [shipPassengers, setShipPassengers] = React.useState(1);
+  const [passengers, setPassengers] = React.useState({
+    flights: 1,
+    trains: 1,
+    buses: 1,
+    ships: 1,
+  });
+
+  const setPassengerCount = (type: keyof typeof passengers, value: number) => {
+    setPassengers(prev => ({ ...prev, [type]: value }));
+  }
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -413,19 +419,19 @@ export default function BookingsPage() {
             </TabsList>
             
             <TabsContent value="flights" className="mt-6">
-                <BookingForm passengers={flightPassengers} setPassengers={setFlightPassengers} />
+                <BookingForm passengers={passengers.flights} setPassengers={(val) => setPassengerCount('flights', val)} />
             </TabsContent>
             <TabsContent value="trains" className="mt-6">
-                <TrainBookingForm passengers={trainPassengers} setPassengers={setTrainPassengers} />
+                <TrainBookingForm passengers={passengers.trains} setPassengers={(val) => setPassengerCount('trains', val)} />
             </TabsContent>
             <TabsContent value="hotels" className="mt-6">
                 <HotelBookingForm />
             </TabsContent>
             <TabsContent value="buses" className="mt-6">
-                <BusBookingForm passengers={busPassengers} setPassengers={setBusPassengers} />
+                <BusBookingForm passengers={passengers.buses} setPassengers={(val) => setPassengerCount('buses', val)} />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
-                <ShipBookingForm passengers={shipPassengers} setPassengers={setShipPassengers} />
+                <ShipBookingForm passengers={passengers.ships} setPassengers={(val) => setPassengerCount('ships', val)} />
             </TabsContent>
 
           </Tabs>
