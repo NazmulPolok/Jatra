@@ -122,7 +122,7 @@ function HotelDatePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 
-function BookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
+function BookingForm() {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -140,10 +140,6 @@ function BookingForm({passengers, setPassengers}: {passengers: number, setPassen
              <div className="grid gap-2">
               <Label>Return</Label>
               <DatePicker />
-            </div>
-            <div className="grid gap-2">
-                <Label>Passengers</Label>
-                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -165,7 +161,7 @@ function BookingForm({passengers, setPassengers}: {passengers: number, setPassen
     );
 }
 
-function TrainBookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
+function TrainBookingForm() {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -183,10 +179,6 @@ function TrainBookingForm({passengers, setPassengers}: {passengers: number, setP
             <div className="grid gap-2">
                 <Label htmlFor="train-company">Train Company Name</Label>
                 <Input id="train-company" placeholder="e.g. Amtrak" />
-            </div>
-            <div className="grid gap-2">
-                <Label>Passengers</Label>
-                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -315,7 +307,7 @@ function HotelBookingForm() {
     )
 }
 
-function BusBookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
+function BusBookingForm() {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -334,10 +326,6 @@ function BusBookingForm({passengers, setPassengers}: {passengers: number, setPas
                 <Label htmlFor="bus-company">Bus Company Name</Label>
                 <Input id="bus-company" placeholder="e.g. Greyhound" />
             </div>
-            <div className="grid gap-2">
-                <Label>Passengers</Label>
-                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
-            </div>
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
             </div>
@@ -345,7 +333,7 @@ function BusBookingForm({passengers, setPassengers}: {passengers: number, setPas
     );
 }
 
-function ShipBookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
+function ShipBookingForm() {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -363,10 +351,6 @@ function ShipBookingForm({passengers, setPassengers}: {passengers: number, setPa
              <div className="grid gap-2">
                 <Label htmlFor="ship-company">Ship Company Name</Label>
                 <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
-            </div>
-            <div className="grid gap-2">
-                <Label>Passengers</Label>
-                <PassengerCounter count={passengers} setCount={setPassengers} min={1}/>
             </div>
             <div className="grid gap-2">
                 <Label>Class</Label>
@@ -389,16 +373,6 @@ function ShipBookingForm({passengers, setPassengers}: {passengers: number, setPa
 
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = React.useState("hotels");
-  const [passengers, setPassengers] = React.useState({
-    flights: 1,
-    trains: 1,
-    buses: 1,
-    ships: 1,
-  });
-
-  const setPassengerCount = (type: keyof typeof passengers, value: number) => {
-    setPassengers(prev => ({ ...prev, [type]: value }));
-  }
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -419,19 +393,19 @@ export default function BookingsPage() {
             </TabsList>
             
             <TabsContent value="flights" className="mt-6">
-                <BookingForm passengers={passengers.flights} setPassengers={(val) => setPassengerCount('flights', val)} />
+                <BookingForm />
             </TabsContent>
             <TabsContent value="trains" className="mt-6">
-                <TrainBookingForm passengers={passengers.trains} setPassengers={(val) => setPassengerCount('trains', val)} />
+                <TrainBookingForm />
             </TabsContent>
             <TabsContent value="hotels" className="mt-6">
                 <HotelBookingForm />
             </TabsContent>
             <TabsContent value="buses" className="mt-6">
-                <BusBookingForm passengers={passengers.buses} setPassengers={(val) => setPassengerCount('buses', val)} />
+                <BusBookingForm />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
-                <ShipBookingForm passengers={passengers.ships} setPassengers={(val) => setPassengerCount('ships', val)} />
+                <ShipBookingForm />
             </TabsContent>
 
           </Tabs>
