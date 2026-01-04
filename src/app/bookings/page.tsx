@@ -392,6 +392,7 @@ function ShipBookingForm() {
 }
 
 export default function BookingsPage() {
+  const [activeTab, setActiveTab] = React.useState("hotels");
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-5xl mx-auto bg-card">
@@ -400,7 +401,7 @@ export default function BookingsPage() {
           <CardDescription>Find and book flights, hotels, trains, and more.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="hotels" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 {bookingTypes.map(({value, label, icon: Icon}) => (
                      <TabsTrigger key={value} value={value}>
