@@ -122,8 +122,7 @@ function HotelDatePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 
-function BookingForm() {
-    const [passengers, setPassengers] = React.useState(1);
+function BookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -166,8 +165,7 @@ function BookingForm() {
     );
 }
 
-function TrainBookingForm() {
-    const [passengers, setPassengers] = React.useState(1);
+function TrainBookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -182,7 +180,7 @@ function TrainBookingForm() {
               <Label>Departure</Label>
               <DatePicker />
             </div>
-             <div className="grid gap-2">
+            <div className="grid gap-2">
                 <Label htmlFor="train-company">Train Company Name</Label>
                 <Input id="train-company" placeholder="e.g. Amtrak" />
             </div>
@@ -317,8 +315,7 @@ function HotelBookingForm() {
     )
 }
 
-function BusBookingForm() {
-    const [passengers, setPassengers] = React.useState(1);
+function BusBookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -348,8 +345,7 @@ function BusBookingForm() {
     );
 }
 
-function ShipBookingForm() {
-    const [passengers, setPassengers] = React.useState(1);
+function ShipBookingForm({passengers, setPassengers}: {passengers: number, setPassengers: (value: number) => void}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -393,6 +389,11 @@ function ShipBookingForm() {
 
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = React.useState("hotels");
+  const [flightPassengers, setFlightPassengers] = React.useState(1);
+  const [trainPassengers, setTrainPassengers] = React.useState(1);
+  const [busPassengers, setBusPassengers] = React.useState(1);
+  const [shipPassengers, setShipPassengers] = React.useState(1);
+
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-5xl mx-auto bg-card">
@@ -412,19 +413,19 @@ export default function BookingsPage() {
             </TabsList>
             
             <TabsContent value="flights" className="mt-6">
-                <BookingForm />
+                <BookingForm passengers={flightPassengers} setPassengers={setFlightPassengers} />
             </TabsContent>
             <TabsContent value="trains" className="mt-6">
-                <TrainBookingForm />
+                <TrainBookingForm passengers={trainPassengers} setPassengers={setTrainPassengers} />
             </TabsContent>
             <TabsContent value="hotels" className="mt-6">
                 <HotelBookingForm />
             </TabsContent>
             <TabsContent value="buses" className="mt-6">
-                <BusBookingForm />
+                <BusBookingForm passengers={busPassengers} setPassengers={setBusPassengers} />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
-                <ShipBookingForm />
+                <ShipBookingForm passengers={shipPassengers} setPassengers={setShipPassengers} />
             </TabsContent>
 
           </Tabs>
