@@ -44,6 +44,62 @@ function PassengerCounter({
     )
 }
 
+function PassengerSelector({
+    adults,
+    setAdults,
+    children,
+    setChildren,
+    labelSingular,
+    labelPlural
+}: {
+    adults: number;
+    setAdults: (value: number) => void;
+    children: number;
+    setChildren: (value: number) => void;
+    labelSingular: string;
+    labelPlural: string;
+}) {
+    const totalPassengers = adults + children;
+    const passengerLabel = totalPassengers === 1 ? labelSingular : labelPlural;
+
+    return (
+        <div className="grid gap-2">
+             <Label>Passengers</Label>
+             <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                    >
+                        <User className="mr-2 h-4 w-4" />
+                        {totalPassengers} {passengerLabel}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                    <div className="grid gap-4">
+                        <div className="space-y-2">
+                            <h4 className="font-medium leading-none">Passengers</h4>
+                            <p className="text-sm text-muted-foreground">
+                                Select number of passengers.
+                            </p>
+                        </div>
+                        <div className="grid gap-4">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="adults">Adults</Label>
+                                <PassengerCounter count={adults} setCount={setAdults} min={1} />
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="children">Children</Label>
+                                <PassengerCounter count={children} setCount={setChildren} min={0}/>
+                            </div>
+                        </div>
+                    </div>
+                </PopoverContent>
+            </Popover>
+        </div>
+    )
+}
+
 function DatePicker({label = "Pick a date"}: {label?: string}) {
   const [date, setDate] = React.useState<Date>()
 
@@ -122,7 +178,7 @@ function HotelDatePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 
-function BookingForm() {
+function BookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -141,6 +197,14 @@ function BookingForm() {
               <Label>Return</Label>
               <DatePicker />
             </div>
+             <PassengerSelector
+                adults={adults}
+                setAdults={setAdults}
+                children={children}
+                setChildren={setChildren}
+                labelSingular="Passenger"
+                labelPlural="Passengers"
+             />
             <div className="grid gap-2">
                 <Label>Class</Label>
                 <Select>
@@ -161,7 +225,7 @@ function BookingForm() {
     );
 }
 
-function TrainBookingForm() {
+function TrainBookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -180,6 +244,14 @@ function TrainBookingForm() {
                 <Label htmlFor="train-company">Train Company Name</Label>
                 <Input id="train-company" placeholder="e.g. Amtrak" />
             </div>
+            <PassengerSelector
+                adults={adults}
+                setAdults={setAdults}
+                children={children}
+                setChildren={setChildren}
+                labelSingular="Passenger"
+                labelPlural="Passengers"
+             />
             <div className="grid gap-2">
                 <Label>Class</Label>
                 <Select>
@@ -307,7 +379,7 @@ function HotelBookingForm() {
     )
 }
 
-function BusBookingForm() {
+function BusBookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -326,6 +398,14 @@ function BusBookingForm() {
                 <Label htmlFor="bus-company">Bus Company Name</Label>
                 <Input id="bus-company" placeholder="e.g. Greyhound" />
             </div>
+            <PassengerSelector
+                adults={adults}
+                setAdults={setAdults}
+                children={children}
+                setChildren={setChildren}
+                labelSingular="Passenger"
+                labelPlural="Passengers"
+             />
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
             </div>
@@ -333,7 +413,7 @@ function BusBookingForm() {
     );
 }
 
-function ShipBookingForm() {
+function ShipBookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
@@ -352,6 +432,14 @@ function ShipBookingForm() {
                 <Label htmlFor="ship-company">Ship Company Name</Label>
                 <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
             </div>
+            <PassengerSelector
+                adults={adults}
+                setAdults={setAdults}
+                children={children}
+                setChildren={setChildren}
+                labelSingular="Passenger"
+                labelPlural="Passengers"
+             />
             <div className="grid gap-2">
                 <Label>Class</Label>
                 <Select>
@@ -373,6 +461,8 @@ function ShipBookingForm() {
 
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = React.useState("hotels");
+  const [adults, setAdults] = React.useState(1);
+  const [children, setChildren] = React.useState(0);
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -393,19 +483,19 @@ export default function BookingsPage() {
             </TabsList>
             
             <TabsContent value="flights" className="mt-6">
-                <BookingForm />
+                <BookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             </TabsContent>
             <TabsContent value="trains" className="mt-6">
-                <TrainBookingForm />
+                <TrainBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             </TabsContent>
             <TabsContent value="hotels" className="mt-6">
                 <HotelBookingForm />
             </TabsContent>
             <TabsContent value="buses" className="mt-6">
-                <BusBookingForm />
+                <BusBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
-                <ShipBookingForm />
+                <ShipBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             </TabsContent>
 
           </Tabs>
