@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button"
@@ -10,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User, PersonStanding, Search } from "lucide-react"
+import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User, PersonStanding, Search, Briefcase } from "lucide-react"
 import * as React from 'react';
 import { DateRange } from "react-day-picker"
 
@@ -49,18 +50,14 @@ function PassengerSelector({
     setAdults,
     children,
     setChildren,
-    labelSingular,
-    labelPlural
 }: {
     adults: number;
     setAdults: (value: number) => void;
     children: number;
     setChildren: (value: number) => void;
-    labelSingular: string;
-    labelPlural: string;
 }) {
     const totalPassengers = adults + children;
-    const passengerLabel = totalPassengers === 1 ? labelSingular : labelPlural;
+    const passengerLabel = totalPassengers === 1 ? 'Passenger' : 'Passengers';
 
     return (
         <div className="grid gap-2">
@@ -177,10 +174,17 @@ function HotelDatePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
+interface BookingFormProps {
+    adults: number;
+    setAdults: (v: number) => void;
+    children: number;
+    setChildren: (v: number) => void;
+    onSearch: (e: React.FormEvent) => void;
+}
 
-function BookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
+function BookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
     return (
-        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
               <Input id="from" placeholder="New York (JFK)" />
@@ -197,14 +201,7 @@ function BookingForm({adults, setAdults, children, setChildren}: {adults: number
               <Label>Return</Label>
               <DatePicker />
             </div>
-             <PassengerSelector
-                adults={adults}
-                setAdults={setAdults}
-                children={children}
-                setChildren={setChildren}
-                labelSingular="Passenger"
-                labelPlural="Passengers"
-             />
+            <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="grid gap-2">
                 <Label>Class</Label>
                 <Select>
@@ -225,9 +222,9 @@ function BookingForm({adults, setAdults, children, setChildren}: {adults: number
     );
 }
 
-function TrainBookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
+function TrainBookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
     return (
-        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
               <Input id="from" placeholder="New York (Penn Station)" />
@@ -244,14 +241,7 @@ function TrainBookingForm({adults, setAdults, children, setChildren}: {adults: n
                 <Label htmlFor="train-company">Train Company Name</Label>
                 <Input id="train-company" placeholder="e.g. Amtrak" />
             </div>
-            <PassengerSelector
-                adults={adults}
-                setAdults={setAdults}
-                children={children}
-                setChildren={setChildren}
-                labelSingular="Passenger"
-                labelPlural="Passengers"
-             />
+            <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="grid gap-2">
                 <Label>Class</Label>
                 <Select>
@@ -271,7 +261,7 @@ function TrainBookingForm({adults, setAdults, children, setChildren}: {adults: n
     );
 }
 
-function HotelBookingForm() {
+function HotelBookingForm({ onSearch }: { onSearch: (e: React.FormEvent) => void }) {
     const [adults, setAdults] = React.useState(2);
     const [children, setChildren] = React.useState(0);
     const [rooms, setRooms] = React.useState(1);
@@ -295,7 +285,7 @@ function HotelBookingForm() {
     
     return (
         <div className="bg-card p-2 rounded-lg shadow-lg border">
-            <form className="grid grid-cols-1 lg:grid-cols-12 gap-px">
+            <form onSubmit={onSearch} className="grid grid-cols-1 lg:grid-cols-12 gap-px">
                 <div className="relative lg:col-span-4">
                     <Bed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input id="destination" placeholder="Dhaka, Bangladesh" className="h-12 pl-10 border-0 focus-visible:ring-0" />
@@ -379,9 +369,9 @@ function HotelBookingForm() {
     )
 }
 
-function BusBookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
+function BusBookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
     return (
-        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
               <Input id="from" placeholder="e.g. New York" />
@@ -398,14 +388,7 @@ function BusBookingForm({adults, setAdults, children, setChildren}: {adults: num
                 <Label htmlFor="bus-company">Bus Company Name</Label>
                 <Input id="bus-company" placeholder="e.g. Greyhound" />
             </div>
-            <PassengerSelector
-                adults={adults}
-                setAdults={setAdults}
-                children={children}
-                setChildren={setChildren}
-                labelSingular="Passenger"
-                labelPlural="Passengers"
-             />
+            <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="lg:col-span-2">
                  <Button type="submit" className="w-full h-full">Search</Button>
             </div>
@@ -413,9 +396,9 @@ function BusBookingForm({adults, setAdults, children, setChildren}: {adults: num
     );
 }
 
-function ShipBookingForm({adults, setAdults, children, setChildren}: {adults: number; setAdults: (v:number) => void; children: number; setChildren: (v:number) => void;}) {
+function ShipBookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
     return (
-        <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
               <Input id="from" placeholder="e.g., Miami Port" />
@@ -432,14 +415,7 @@ function ShipBookingForm({adults, setAdults, children, setChildren}: {adults: nu
                 <Label htmlFor="ship-company">Ship Company Name</Label>
                 <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
             </div>
-            <PassengerSelector
-                adults={adults}
-                setAdults={setAdults}
-                children={children}
-                setChildren={setChildren}
-                labelSingular="Passenger"
-                labelPlural="Passengers"
-             />
+            <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="grid gap-2">
                 <Label>Class</Label>
                 <Select>
@@ -459,10 +435,38 @@ function ShipBookingForm({adults, setAdults, children, setChildren}: {adults: nu
     );
 }
 
+function SearchResults() {
+    return (
+        <div className="mt-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Search Results</CardTitle>
+                    <CardDescription>Your search results will appear here.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center min-h-[200px] text-center">
+                    <Briefcase className="w-16 h-16 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No search results yet. Try searching for a trip.</p>
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
+
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = React.useState("hotels");
   const [adults, setAdults] = React.useState(1);
   const [children, setChildren] = React.useState(0);
+  const [showResults, setShowResults] = React.useState(false);
+
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    setShowResults(true);
+  }
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setShowResults(false);
+  }
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -472,7 +476,7 @@ export default function BookingsPage() {
           <CardDescription>Find and book flights, hotels, trains, and more.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                 {bookingTypes.map(({value, label, icon: Icon}) => (
                      <TabsTrigger key={value} value={value}>
@@ -483,24 +487,28 @@ export default function BookingsPage() {
             </TabsList>
             
             <TabsContent value="flights" className="mt-6">
-                <BookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
+                <BookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} onSearch={handleSearch} />
             </TabsContent>
             <TabsContent value="trains" className="mt-6">
-                <TrainBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
+                <TrainBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} onSearch={handleSearch} />
             </TabsContent>
             <TabsContent value="hotels" className="mt-6">
-                <HotelBookingForm />
+                <HotelBookingForm onSearch={handleSearch}/>
             </TabsContent>
             <TabsContent value="buses" className="mt-6">
-                <BusBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
+                <BusBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} onSearch={handleSearch} />
             </TabsContent>
             <TabsContent value="ships" className="mt-6">
-                <ShipBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
+                <ShipBookingForm adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} onSearch={handleSearch} />
             </TabsContent>
-
           </Tabs>
+
+          {showResults && <SearchResults />}
+
         </CardContent>
       </Card>
     </div>
   )
 }
+
+    
