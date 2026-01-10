@@ -2,6 +2,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   Menu,
   Map,
@@ -21,9 +23,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { JatraLogo } from '@/components/icons/logo';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
-import { signOut } from 'firebase/auth';
+import { createSupabaseBrowserClient } from '@/lib/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 
@@ -34,10 +35,37 @@ const navLinks = [
 ];
 
 export default function Header() {
-  const [user, loading, error] = useAuthState(auth);
+  const router = useRouter();
+  const supabase = createSupabaseBrowserClient();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        router.refresh();
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase, router]);
+
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await supabase.auth.signOut();
+    router.push('/');
   };
 
   const getInitials = (name: string | null | undefined) => {
@@ -46,6 +74,9 @@ export default function Header() {
     const initials = names.map(n => n[0]).join('');
     return initials.toUpperCase();
   }
+
+  const displayName = user?.user_metadata?.full_name || user?.email;
+  const photoURL = user?.user_metadata?.avatar_url;
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
@@ -101,8 +132,8 @@ export default function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
                <Avatar>
-                  {user?.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />}
-                  <AvatarFallback>{user ? getInitials(user.displayName) : <User className="h-5 w-5" />}</AvatarFallback>
+                  {photoURL && <AvatarImage src={photoURL} alt={displayName || 'User'} />}
+                  <AvatarFallback>{!loading && user ? getInitials(displayName) : <User className="h-5 w-5" />}</AvatarFallback>
                 </Avatar>
               <span className="sr-only">Toggle user menu</span>
             </Button>
@@ -110,7 +141,7 @@ export default function Header() {
           <DropdownMenuContent align="end">
              {user ? (
               <>
-                <DropdownMenuLabel>{user.displayName || 'My Account'}</DropdownMenuLabel>
+                <DropdownMenuLabel>{displayName || 'My Account'}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/profile/history">Booking History</Link>

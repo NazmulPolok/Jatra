@@ -4,8 +4,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 
 import { Button } from "@/components/ui/button"
@@ -29,6 +28,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const supabase = createSupabaseBrowserClient();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,30 +37,40 @@ export default function SignupPage() {
         return;
     }
     setLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, { displayName: `${firstName} ${lastName}` });
-      toast({ title: "Success", description: "Account created successfully!" });
-      router.push("/");
-    } catch (error: any) {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: `${firstName} ${lastName}`,
+        },
+        emailRedirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
       console.error("Signup Error:", error);
       toast({ title: "Signup Failed", description: error.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
+    } else {
+      toast({ title: "Success", description: "Account created! Please check your email to verify." });
+      router.push("/");
+      router.refresh();
     }
+    setLoading(false);
   };
 
   const handleGoogleSignup = async () => {
     setLoading(true);
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      toast({ title: "Success", description: "Signed up with Google successfully!" });
-      router.push("/");
-    } catch (error: any) {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
       console.error("Google Signup Error:", error);
       toast({ title: "Google Signup Failed", description: error.message, variant: "destructive" });
-    } finally {
       setLoading(false);
     }
   }

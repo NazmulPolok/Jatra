@@ -4,8 +4,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,33 +25,39 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const supabase = createSupabaseBrowserClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast({ title: "Success", description: "Logged in successfully!" });
-      router.push("/");
-    } catch (error: any) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (error) {
       console.error("Login Error:", error);
       toast({ title: "Login Failed", description: error.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
+    } else {
+      toast({ title: "Success", description: "Logged in successfully!" });
+      router.push("/");
+      router.refresh();
     }
+    setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      toast({ title: "Success", description: "Logged in with Google successfully!" });
-      router.push("/");
-    } catch (error: any) {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
       console.error("Google Login Error:", error);
       toast({ title: "Google Login Failed", description: error.message, variant: "destructive" });
-    } finally {
       setLoading(false);
     }
   }
