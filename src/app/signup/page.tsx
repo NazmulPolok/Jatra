@@ -1,4 +1,12 @@
+
+'use client';
+
 import Link from "next/link"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+
 
 import { Button } from "@/components/ui/button"
 import {
@@ -11,8 +19,53 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { JatraLogo } from "@/components/icons/logo"
+import { useToast } from "@/hooks/use-toast";
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password.length < 6) {
+        toast({ title: "Password too short", description: "Password must be at least 6 characters.", variant: "destructive" });
+        return;
+    }
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: `${firstName} ${lastName}` });
+      toast({ title: "Success", description: "Account created successfully!" });
+      router.push("/");
+    } catch (error: any) {
+      console.error("Signup Error:", error);
+      toast({ title: "Signup Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      toast({ title: "Success", description: "Signed up with Google successfully!" });
+      router.push("/");
+    } catch (error: any) {
+      console.error("Google Signup Error:", error);
+      toast({ title: "Google Signup Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100dvh-10rem)] py-12">
         <Card className="mx-auto max-w-sm w-full">
@@ -26,42 +79,78 @@ export default function SignupPage() {
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <div className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                <Label htmlFor="first-name">First name</Label>
-                <Input id="first-name" placeholder="Max" required />
+            <form onSubmit={handleSignup}>
+              <div className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                  <Label htmlFor="first-name">First name</Label>
+                  <Input 
+                    id="first-name" 
+                    placeholder="Max" 
+                    required 
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    disabled={loading}
+                  />
+                  </div>
+                  <div className="grid gap-2">
+                  <Label htmlFor="last-name">Last name</Label>
+                  <Input 
+                    id="last-name" 
+                    placeholder="Robinson" 
+                    required 
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    disabled={loading}
+                  />
+                  </div>
+              </div>
+              <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                  />
+              </div>
+              <div className="grid gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                  />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? 'Creating Account...' : 'Create an account'}
+              </Button>
+              </div>
+            </form>
+            <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
                 </div>
-                <div className="grid gap-2">
-                <Label htmlFor="last-name">Last name</Label>
-                <Input id="last-name" placeholder="Robinson" required />
+                <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                    Or continue with
+                </span>
                 </div>
             </div>
-            <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                />
-            </div>
-            <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" />
-            </div>
-            <Button type="submit" className="w-full">
-                Create an account
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignup} disabled={loading}>
+                {loading ? 'Please wait...' : 'Sign up with Google'}
             </Button>
-            <Button variant="outline" className="w-full">
-                Sign up with Google
-            </Button>
-            </div>
             <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link href="/login" className="underline">
-                Login
-            </Link>
+              Already have an account?{" "}
+              <Link href="/login" className="underline">
+                  Login
+              </Link>
             </div>
         </CardContent>
         </Card>

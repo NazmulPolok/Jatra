@@ -1,19 +1,14 @@
+
 'use client';
 
 import Link from 'next/link';
 import {
   Menu,
-  Mountain,
-  Package2,
-  Plane,
-  Train,
-  Ship,
-  Hotel,
-  Bus,
-  User,
   Map,
+  Plane,
   Wand2,
-  LayoutDashboard,
+  User,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +21,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { JatraLogo } from '@/components/icons/logo';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
 
 const navLinks = [
   { href: '/destinations', label: 'Destinations', icon: Map },
@@ -34,6 +34,19 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const [user, loading, error] = useAuthState(auth);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return '';
+    const names = name.split(' ');
+    const initials = names.map(n => n[0]).join('');
+    return initials.toUpperCase();
+  }
+
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -87,26 +100,42 @@ export default function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
-              <User className="h-5 w-5" />
+               <Avatar>
+                  {user?.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />}
+                  <AvatarFallback>{user ? getInitials(user.displayName) : <User className="h-5 w-5" />}</AvatarFallback>
+                </Avatar>
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/profile/history">Booking History</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/admin">Admin Panel</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/login">Login</Link>
-            </DropdownMenuItem>
-             <DropdownMenuItem asChild>
-              <Link href="/signup">Sign Up</Link>
-            </DropdownMenuItem>
+             {user ? (
+              <>
+                <DropdownMenuLabel>{user.displayName || 'My Account'}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile/history">Booking History</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin">Admin Panel</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/login">Login</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                  <Link href="/signup">Sign Up</Link>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
