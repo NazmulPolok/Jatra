@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +13,8 @@ import { format } from "date-fns"
 import { CalendarIcon, Plane, Train, Hotel, Bus, Ship, Users, Minus, Plus, Bed, User, PersonStanding, Search, Briefcase } from "lucide-react"
 import * as React from 'react';
 import { DateRange } from "react-day-picker"
+import { saveSearch } from "@/app/actions/save-search";
+import { useToast } from "@/hooks/use-toast";
 
 const bookingTypes = [
   { value: "flights", label: "Flights", icon: Plane },
@@ -97,9 +98,7 @@ function PassengerSelector({
     )
 }
 
-function DatePicker({label = "Pick a date"}: {label?: string}) {
-  const [date, setDate] = React.useState<Date>()
-
+function DatePicker({label = "Pick a date", date, setDate}: {label?: string, date?: Date, setDate: (date?: Date) => void}) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -126,12 +125,7 @@ function DatePicker({label = "Pick a date"}: {label?: string}) {
   )
 }
 
-function HotelDatePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2025, 0, 3),
-    to: new Date(2025, 0, 4),
-  })
-
+function HotelDatePicker({ className, date, setDate }: React.HTMLAttributes<HTMLDivElement> & { date?: DateRange, setDate: (date?: DateRange) => void }) {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -183,28 +177,56 @@ interface BookingFormProps {
 }
 
 function BookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
+    const [from, setFrom] = React.useState('');
+    const [to, setTo] = React.useState('');
+    const [departure, setDeparture] = React.useState<Date>();
+    const [returnDate, setReturnDate] = React.useState<Date>();
+    const [flightClass, setFlightClass] = React.useState('economy');
+    
+    const { toast } = useToast();
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        onSearch(e);
+        const searchData = {
+            search_type: 'flight',
+            from_location: from,
+            to_location: to,
+            departure_date: departure,
+            return_date: returnDate,
+            adults,
+            children,
+            class: flightClass,
+        };
+        const result = await saveSearch(searchData);
+        if (result.error) {
+            toast({ title: "Error saving search", description: result.error, variant: "destructive" });
+        } else {
+            toast({ title: "Search saved!", description: "Your search has been saved." });
+        }
+    }
+
     return (
-        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
-              <Input id="from" placeholder="New York (JFK)" />
+              <Input id="from" placeholder="New York (JFK)" value={from} onChange={(e) => setFrom(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="to">To</Label>
-              <Input id="to" placeholder="Paris (CDG)" />
+              <Input id="to" placeholder="Paris (CDG)" value={to} onChange={(e) => setTo(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label>Departure</Label>
-              <DatePicker />
+              <DatePicker date={departure} setDate={setDeparture} />
             </div>
              <div className="grid gap-2">
               <Label>Return</Label>
-              <DatePicker />
+              <DatePicker date={returnDate} setDate={setReturnDate} />
             </div>
             <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="grid gap-2">
                 <Label>Class</Label>
-                <Select>
+                <Select value={flightClass} onValueChange={setFlightClass}>
                     <SelectTrigger>
                         <SelectValue placeholder="Economy" />
                     </SelectTrigger>
@@ -223,28 +245,56 @@ function BookingForm({adults, setAdults, children, setChildren, onSearch}: Booki
 }
 
 function TrainBookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
+    const [from, setFrom] = React.useState('');
+    const [to, setTo] = React.useState('');
+    const [departure, setDeparture] = React.useState<Date>();
+    const [company, setCompany] = React.useState('');
+    const [trainClass, setTrainClass] = React.useState('business');
+
+    const { toast } = useToast();
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        onSearch(e);
+        const searchData = {
+            search_type: 'train',
+            from_location: from,
+            to_location: to,
+            departure_date: departure,
+            company_name: company,
+            adults,
+            children,
+            class: trainClass,
+        };
+        const result = await saveSearch(searchData);
+        if (result.error) {
+            toast({ title: "Error saving search", description: result.error, variant: "destructive" });
+        } else {
+            toast({ title: "Search saved!", description: "Your search has been saved." });
+        }
+    }
+    
     return (
-        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
-              <Input id="from" placeholder="New York (Penn Station)" />
+              <Input id="from" placeholder="New York (Penn Station)" value={from} onChange={(e) => setFrom(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="to">To</Label>
-              <Input id="to" placeholder="Washington (Union Station)" />
+              <Input id="to" placeholder="Washington (Union Station)" value={to} onChange={(e) => setTo(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label>Departure</Label>
-              <DatePicker />
+              <DatePicker date={departure} setDate={setDeparture} />
             </div>
             <div className="grid gap-2">
                 <Label htmlFor="train-company">Train Company Name</Label>
-                <Input id="train-company" placeholder="e.g. Amtrak" />
+                <Input id="train-company" placeholder="e.g. Amtrak" value={company} onChange={(e) => setCompany(e.target.value)} />
             </div>
             <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="grid gap-2">
                 <Label>Class</Label>
-                <Select>
+                <Select value={trainClass} onValueChange={setTrainClass}>
                     <SelectTrigger>
                         <SelectValue placeholder="Business" />
                     </SelectTrigger>
@@ -262,10 +312,17 @@ function TrainBookingForm({adults, setAdults, children, setChildren, onSearch}: 
 }
 
 function HotelBookingForm({ onSearch }: { onSearch: (e: React.FormEvent) => void }) {
+    const [destination, setDestination] = React.useState('');
+    const [date, setDate] = React.useState<DateRange | undefined>({
+      from: new Date(2025, 0, 3),
+      to: new Date(2025, 0, 4),
+    })
     const [adults, setAdults] = React.useState(2);
     const [children, setChildren] = React.useState(0);
     const [rooms, setRooms] = React.useState(1);
     const [childrenAges, setChildrenAges] = React.useState<number[]>([]);
+    
+    const { toast } = useToast();
 
     React.useEffect(() => {
         setChildrenAges(currentAges => {
@@ -283,15 +340,34 @@ function HotelBookingForm({ onSearch }: { onSearch: (e: React.FormEvent) => void
         setChildrenAges(newAges);
     }
     
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        onSearch(e);
+        const searchData = {
+            search_type: 'hotel',
+            to_location: destination,
+            departure_date: date?.from,
+            return_date: date?.to,
+            adults,
+            children,
+            rooms
+        };
+        const result = await saveSearch(searchData);
+        if (result.error) {
+            toast({ title: "Error saving search", description: result.error, variant: "destructive" });
+        } else {
+            toast({ title: "Search saved!", description: "Your search has been saved." });
+        }
+    }
+
     return (
         <div className="bg-card p-2 rounded-lg shadow-lg border">
-            <form onSubmit={onSearch} className="grid grid-cols-1 lg:grid-cols-12 gap-px">
+            <form onSubmit={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-px">
                 <div className="relative lg:col-span-4">
                     <Bed className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="destination" placeholder="Dhaka, Bangladesh" className="h-12 pl-10 border-0 focus-visible:ring-0" />
+                    <Input id="destination" placeholder="Dhaka, Bangladesh" className="h-12 pl-10 border-0 focus-visible:ring-0" value={destination} onChange={e => setDestination(e.target.value)} />
                 </div>
                 <div className="lg:col-span-3">
-                    <HotelDatePicker />
+                    <HotelDatePicker date={date} setDate={setDate} />
                 </div>
                 <div className="relative lg:col-span-3">
                      <Popover>
@@ -370,23 +446,49 @@ function HotelBookingForm({ onSearch }: { onSearch: (e: React.FormEvent) => void
 }
 
 function BusBookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
+    const [from, setFrom] = React.useState('');
+    const [to, setTo] = React.useState('');
+    const [departure, setDeparture] = React.useState<Date>();
+    const [company, setCompany] = React.useState('');
+
+    const { toast } = useToast();
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        onSearch(e);
+        const searchData = {
+            search_type: 'bus',
+            from_location: from,
+            to_location: to,
+            departure_date: departure,
+            company_name: company,
+            adults,
+            children,
+        };
+        const result = await saveSearch(searchData);
+        if (result.error) {
+            toast({ title: "Error saving search", description: result.error, variant: "destructive" });
+        } else {
+            toast({ title: "Search saved!", description: "Your search has been saved." });
+        }
+    }
+
     return (
-        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
-              <Input id="from" placeholder="e.g. New York" />
+              <Input id="from" placeholder="e.g. New York" value={from} onChange={(e) => setFrom(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="to">To</Label>
-              <Input id="to" placeholder="e.g. Boston" />
+              <Input id="to" placeholder="e.g. Boston" value={to} onChange={(e) => setTo(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label>Date</Label>
-              <DatePicker />
+              <DatePicker date={departure} setDate={setDeparture} />
             </div>
             <div className="grid gap-2">
                 <Label htmlFor="bus-company">Bus Company Name</Label>
-                <Input id="bus-company" placeholder="e.g. Greyhound" />
+                <Input id="bus-company" placeholder="e.g. Greyhound" value={company} onChange={(e) => setCompany(e.target.value)} />
             </div>
             <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="lg:col-span-2">
@@ -397,28 +499,56 @@ function BusBookingForm({adults, setAdults, children, setChildren, onSearch}: Bo
 }
 
 function ShipBookingForm({adults, setAdults, children, setChildren, onSearch}: BookingFormProps) {
+    const [from, setFrom] = React.useState('');
+    const [to, setTo] = React.useState('');
+    const [departure, setDeparture] = React.useState<Date>();
+    const [company, setCompany] = React.useState('');
+    const [shipClass, setShipClass] = React.useState('business');
+    
+    const { toast } = useToast();
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        onSearch(e);
+        const searchData = {
+            search_type: 'ship',
+            from_location: from,
+            to_location: to,
+            departure_date: departure,
+            company_name: company,
+            adults,
+            children,
+            class: shipClass,
+        };
+        const result = await saveSearch(searchData);
+        if (result.error) {
+            toast({ title: "Error saving search", description: result.error, variant: "destructive" });
+        } else {
+            toast({ title: "Search saved!", description: "Your search has been saved." });
+        }
+    }
+
     return (
-        <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="from">From</Label>
-              <Input id="from" placeholder="e.g., Miami Port" />
+              <Input id="from" placeholder="e.g., Miami Port" value={from} onChange={(e) => setFrom(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="to">To</Label>
-              <Input id="to" placeholder="e.g., Nassau, Bahamas" />
+              <Input id="to" placeholder="e.g., Nassau, Bahamas" value={to} onChange={(e) => setTo(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label>Departure</Label>
-              <DatePicker />
+              <DatePicker date={departure} setDate={setDeparture} />
             </div>
              <div className="grid gap-2">
                 <Label htmlFor="ship-company">Ship Company Name</Label>
-                <Input id="ship-company" placeholder="e.g. Royal Caribbean" />
+                <Input id="ship-company" placeholder="e.g. Royal Caribbean" value={company} onChange={(e) => setCompany(e.target.value)} />
             </div>
             <PassengerSelector adults={adults} setAdults={setAdults} children={children} setChildren={setChildren} />
             <div className="grid gap-2">
                 <Label>Class</Label>
-                <Select>
+                <Select value={shipClass} onValueChange={setShipClass}>
                     <SelectTrigger>
                         <SelectValue placeholder="Business" />
                     </SelectTrigger>
@@ -510,5 +640,3 @@ export default function BookingsPage() {
     </div>
   )
 }
-
-    
