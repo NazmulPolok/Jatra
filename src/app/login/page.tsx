@@ -36,7 +36,7 @@ export default function LoginPage() {
     
     if (error) {
       console.error("Login Error:", error);
-       if (error.message === 'Email not confirmed') {
+       if (error.message.includes('Email not confirmed')) {
         toast({ 
             title: "Email verification pending", 
             description: "Please check your inbox and click the confirmation link to activate your account.", 
