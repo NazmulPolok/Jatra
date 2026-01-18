@@ -27,7 +27,7 @@ import { JatraLogo } from '../..//components/icons/logo';
 
 const adminNavLinks = [
     { href: '/admin', label: 'Dashboard', icon: Home },
-    { href: '/admin/bookings', label: 'Bookings', icon: ShoppingCart, badge: 6 },
+    { href: '/admin/bookings', label: 'Bookings', icon: ShoppingCart },
     { href: '/admin/destinations', label: 'Destinations', icon: MapPin },
     { href: '/admin/transport', label: 'Transport', icon: Plane },
     { href: '/admin/hotels', label: 'Hotels', icon: Hotel },

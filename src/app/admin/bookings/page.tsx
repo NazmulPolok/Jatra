@@ -1,59 +1,89 @@
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { MoreHorizontal } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { format } from 'date-fns';
 
-export default function AdminBookingsPage() {
+export default async function AdminBookingsPage() {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const { data: searches, error } = await supabase
+    .from('searches')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching searches:', error);
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bookings</CardTitle>
-        <CardDescription>Manage your bookings and view their details.</CardDescription>
+        <CardTitle>Recent Searches</CardTitle>
+        <CardDescription>
+          View recent searches made by users. This shows raw data from your
+          `searches` table.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Customer</TableHead>
+              <TableHead>User ID</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
+              <TableHead>From</TableHead>
+              <TableHead>To</TableHead>
+              <TableHead>Search Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">John Doe</TableCell>
-              <TableCell>Flight</TableCell>
-              <TableCell>
-                <Badge variant="outline">Approved</Badge>
-              </TableCell>
-              <TableCell>2024-07-25</TableCell>
-              <TableCell>$450.00</TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Cancel Booking</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
+            {(searches || []).map((search: any) => (
+              <TableRow key={search.id}>
+                <TableCell className="font-medium truncate max-w-xs">
+                  {search.user_id || 'Anonymous'}
+                </TableCell>
+                <TableCell>{search.search_type}</TableCell>
+                <TableCell>{search.from_location}</TableCell>
+                <TableCell>{search.to_location}</TableCell>
+                <TableCell>
+                  {format(new Date(search.created_at), 'PPP')}
+                </TableCell>
+              </TableRow>
+            ))}
+            {(!searches || searches.length === 0) && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No searches found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </CardContent>
     </Card>
-  )
+  );
 }
