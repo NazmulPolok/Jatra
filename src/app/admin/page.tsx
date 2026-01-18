@@ -9,6 +9,9 @@ import {
   Search,
   Users,
 } from 'lucide-react';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { format } from 'date-fns';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -29,7 +32,29 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const { data: searches, error } = await supabase
+    .from('searches')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error('Error fetching recent searches for admin dashboard:', error);
+  }
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -85,9 +110,9 @@ export default function AdminDashboard() {
       <Card>
         <CardHeader className="flex flex-row items-center">
           <div className="grid gap-2">
-            <CardTitle>Recent Bookings</CardTitle>
+            <CardTitle>Recent Searches</CardTitle>
             <CardDescription>
-              Recent bookings from your store.
+              Recent user searches from your database.
             </CardDescription>
           </div>
           <Button asChild size="sm" className="ml-auto gap-1">
@@ -102,49 +127,38 @@ export default function AdminDashboard() {
             <TableHeader>
               <TableRow>
                 <TableHead>Customer</TableHead>
-                <TableHead className="hidden xl:table-column">Type</TableHead>
-                <TableHead className="hidden xl:table-column">Status</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>From</TableHead>
+                <TableHead>To</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  <div className="font-medium">Liam Johnson</div>
-                  <div className="hidden text-sm text-muted-foreground md:inline">
-                    liam@example.com
-                  </div>
-                </TableCell>
-                <TableCell className="hidden xl:table-column">Flight</TableCell>
-                <TableCell className="hidden xl:table-column">
-                  <Badge className="text-xs" variant="outline">
-                    Approved
-                  </Badge>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  2023-06-23
-                </TableCell>
-                <TableCell className="text-right">$250.00</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <div className="font-medium">Olivia Smith</div>
-                  <div className="hidden text-sm text-muted-foreground md:inline">
-                    olivia@example.com
-                  </div>
-                </TableCell>
-                <TableCell className="hidden xl:table-column">Hotel</TableCell>
-                <TableCell className="hidden xl:table-column">
-                  <Badge className="text-xs" variant="destructive">
-                    Declined
-                  </Badge>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  2023-06-24
-                </TableCell>
-                <TableCell className="text-right">$150.00</TableCell>
-              </TableRow>
+              {(searches || []).map((search: any) => (
+                <TableRow key={search.id}>
+                  <TableCell>
+                    <div className="font-medium">
+                      {search.user_id ? 'Registered User' : 'Anonymous'}
+                    </div>
+                    <div className="hidden text-sm text-muted-foreground md:inline truncate max-w-xs">
+                      {search.user_id}
+                    </div>
+                  </TableCell>
+                  <TableCell>{search.search_type}</TableCell>
+                  <TableCell>{search.from_location}</TableCell>
+                  <TableCell>{search.to_location}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {format(new Date(search.created_at), 'PPP')}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {(!searches || searches.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No searches yet.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>

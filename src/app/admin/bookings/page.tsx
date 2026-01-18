@@ -43,7 +43,7 @@ export default async function AdminBookingsPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Searches</CardTitle>
+        <CardTitle>Bookings</CardTitle>
         <CardDescription>
           View recent searches made by users. This shows raw data from your
           `searches` table.
