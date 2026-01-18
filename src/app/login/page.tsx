@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link"
@@ -131,6 +130,9 @@ export default function LoginPage() {
             <Link href="/signup" className="underline">
               Sign up
             </Link>
+          </div>
+          <div className="mt-4 border-t pt-4 text-center text-sm text-muted-foreground">
+            <b>Admin Access:</b> To log in as an admin, you must first sign up using the email address defined in your project's <code>.env</code> file, confirm your email, and then log in here.
           </div>
         </CardContent>
       </Card>
