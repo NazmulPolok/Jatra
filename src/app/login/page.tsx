@@ -36,7 +36,15 @@ export default function LoginPage() {
     
     if (error) {
       console.error("Login Error:", error);
-      toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+       if (error.message === 'Email not confirmed') {
+        toast({ 
+            title: "Email verification pending", 
+            description: "Please check your inbox and click the confirmation link to activate your account.", 
+            variant: "destructive" 
+        });
+      } else {
+        toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+      }
     } else {
       toast({ title: "Success", description: "Logged in successfully!" });
       router.push("/");
