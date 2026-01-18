@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -162,6 +161,9 @@ export default function Header() {
               <>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/admin">Admin Panel</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/login">Login</Link>
                 </DropdownMenuItem>
