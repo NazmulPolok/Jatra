@@ -42,7 +42,14 @@ export default function LoginPage() {
             description: "Please check your inbox and click the confirmation link to activate your account.", 
             variant: "destructive" 
         });
-      } else {
+      } else if (error.message.includes('Invalid login credentials')) {
+        toast({ 
+          title: "Login Failed", 
+          description: "The email or password you entered is incorrect. Please double-check and try again.", 
+          variant: "destructive" 
+        });
+      }
+      else {
         toast({ title: "Login Failed", description: error.message, variant: "destructive" });
       }
     } else {
