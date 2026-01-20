@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link"
@@ -50,7 +49,15 @@ export default function SignupPage() {
 
     if (error) {
       console.error("Signup Error:", error);
-      toast({ title: "Signup Failed", description: error.message, variant: "destructive" });
+      if (error.message.includes('User already registered')) {
+        toast({ 
+          title: "Account already exists", 
+          description: "This email is already registered. Please log in instead.", 
+          variant: "destructive" 
+        });
+      } else {
+        toast({ title: "Signup Failed", description: error.message, variant: "destructive" });
+      }
     } else {
       toast({ title: "Success", description: "Account created! Please check your email to verify." });
       router.push("/");
