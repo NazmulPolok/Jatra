@@ -1,11 +1,10 @@
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -13,48 +12,93 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { bookingHistory } from "@/lib/data"
+} from '@/components/ui/table';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { format } from 'date-fns';
+import { redirect } from 'next/navigation';
 
-export default function BookingHistoryPage() {
+export default async function BookingHistoryPage() {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect('/login?next=/profile/history');
+  }
+
+  const { data: searches, error } = await supabase
+    .from('searches')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching booking history:', error);
+  }
+
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <Card>
-            <CardHeader>
-                <CardTitle className="font-headline text-3xl">Booking History</CardTitle>
-                <CardDescription>A record of all your past bookings with Jatra.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                <TableHeader>
-                    <TableRow>
-                    <TableHead>Booking ID</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Destination</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Cost</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {bookingHistory.map((booking) => (
-                         <TableRow key={booking.id}>
-                            <TableCell className="font-medium">{booking.id}</TableCell>
-                            <TableCell>{booking.type}</TableCell>
-                            <TableCell>{booking.destination}</TableCell>
-                            <TableCell>{booking.date}</TableCell>
-                            <TableCell>
-                                <Badge variant={booking.status === 'Confirmed' ? 'default' : booking.status === 'Cancelled' ? 'destructive' : 'secondary'}>
-                                    {booking.status}
-                                </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">${booking.cost.toFixed(2)}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-headline text-3xl">
+            Booking History
+          </CardTitle>
+          <CardDescription>
+            A record of all your past searches with Jatra.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Type</TableHead>
+                <TableHead>From</TableHead>
+                <TableHead>To</TableHead>
+                <TableHead>Search Date</TableHead>
+                <TableHead>Passengers</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(searches || []).map((search: any) => (
+                <TableRow key={search.id}>
+                  <TableCell className="font-medium capitalize">
+                    {search.search_type}
+                  </TableCell>
+                  <TableCell>{search.from_location}</TableCell>
+                  <TableCell>{search.to_location}</TableCell>
+                  <TableCell>
+                    {format(new Date(search.created_at), 'PPP')}
+                  </TableCell>
+                  <TableCell>
+                    {(search.adults || 0) + (search.children || 0)}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {(!searches || searches.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    You have no search history yet.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }

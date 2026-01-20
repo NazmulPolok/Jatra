@@ -193,20 +193,3 @@ export const destinations: Destination[] = [
     imageId: 'kuala-lumpur',
   }
 ];
-
-export type Booking = {
-    id: string;
-    destination: string;
-    date: string;
-    type: 'Flight' | 'Hotel' | 'Train' | 'Bus' | 'Ship';
-    status: 'Confirmed' | 'Pending' | 'Cancelled';
-    cost: number;
-}
-
-export const bookingHistory: Booking[] = [
-    { id: 'BK001', destination: 'Paris, France', date: '2023-10-15', type: 'Flight', status: 'Confirmed', cost: 750 },
-    { id: 'BK002', destination: 'Paris, France', date: '2023-10-15', type: 'Hotel', status: 'Confirmed', cost: 600 },
-    { id: 'BK003', destination: 'Kyoto, Japan', date: '2023-08-20', type: 'Train', status: 'Confirmed', cost: 120 },
-    { id: 'BK004', destination: 'Rome, Italy', date: '2023-05-30', type: 'Bus', status: 'Cancelled', cost: 50 },
-    { id: 'BK005', destination: 'New York, USA', date: '2022-12-22', type: 'Flight', status: 'Confirmed', cost: 450 },
-];
