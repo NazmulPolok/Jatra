@@ -40,11 +40,18 @@ export default async function BookingHistoryPage() {
     return redirect('/login?next=/profile/history');
   }
 
-  const { data: searches, error } = await supabase
-    .from('searches')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+  let query = supabase.from('searches').select('*');
+
+  // If the logged-in user is the admin, show all searches.
+  // Otherwise, only show searches for the current user.
+  if (user.email !== process.env.ADMIN_EMAIL) {
+    query = query.eq('user_id', user.id);
+  }
+
+  const { data: searches, error } = await query.order('created_at', {
+    ascending: false,
+  });
+
 
   if (error) {
     console.error('Error fetching booking history:', error);
@@ -58,7 +65,10 @@ export default async function BookingHistoryPage() {
             Booking History
           </CardTitle>
           <CardDescription>
-            A record of all your past searches with Jatra.
+            {user.email === process.env.ADMIN_EMAIL 
+              ? "A record of all user searches on the platform."
+              : "A record of all your past searches with Jatra."
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>
