@@ -17,6 +17,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { format } from 'date-fns';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 export default async function BookingHistoryPage() {
   const cookieStore = cookies();
@@ -40,17 +41,13 @@ export default async function BookingHistoryPage() {
     return redirect('/login?next=/profile/history');
   }
 
-  let query = supabase.from('searches').select('*');
+  const isAdmin = user.email === process.env.ADMIN_EMAIL;
 
-  // If the logged-in user is the admin, show all searches.
-  // Otherwise, only show searches for the current user.
-  if (user.email !== process.env.ADMIN_EMAIL) {
-    query = query.eq('user_id', user.id);
-  }
-
-  const { data: searches, error } = await query.order('created_at', {
-    ascending: false,
-  });
+  const { data: searches, error } = await supabase
+    .from('searches')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
 
 
   if (error) {
@@ -65,8 +62,8 @@ export default async function BookingHistoryPage() {
             Booking History
           </CardTitle>
           <CardDescription>
-            {user.email === process.env.ADMIN_EMAIL 
-              ? "A record of all user searches on the platform."
+            {isAdmin 
+              ? <>A record of your personal searches. To view all platform searches, please visit the <Link href="/admin/bookings" className="underline">Admin Panel</Link>.</>
               : "A record of all your past searches with Jatra."
             }
           </CardDescription>
