@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link"
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
@@ -20,6 +20,9 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next');
+  const isAdminLogin = next === '/admin';
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -54,7 +57,7 @@ export default function LoginPage() {
       }
     } else {
       toast({ title: "Success", description: "Logged in successfully!" });
-      router.push("/");
+      router.push(next || "/");
       router.refresh();
     }
     setLoading(false);
@@ -65,7 +68,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(next || '/')}`,
       },
     });
 
@@ -83,7 +86,7 @@ export default function LoginPage() {
             <div className="flex justify-center mb-4">
                 <JatraLogo />
             </div>
-          <CardTitle className="text-2xl font-headline">Login</CardTitle>
+          <CardTitle className="text-2xl font-headline">{isAdminLogin ? 'Admin Login' : 'Login'}</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
@@ -101,6 +104,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
+                  suppressHydrationWarning
                 />
               </div>
               <div className="grid gap-2">
@@ -120,6 +124,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
+                  suppressHydrationWarning
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
