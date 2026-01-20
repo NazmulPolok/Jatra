@@ -36,17 +36,17 @@ export default function LoginPage() {
     
     if (error) {
       console.error("Login Error:", error);
-       if (error.message.includes('Email not confirmed')) {
-        toast({ 
-            title: "Email verification pending", 
-            description: "Please check your inbox and click the confirmation link to activate your account.", 
-            variant: "destructive" 
-        });
-      } else if (error.message.includes('Invalid login credentials')) {
+      if (error.message.includes('Invalid login credentials')) {
         toast({ 
           title: "Login Failed", 
           description: "The email or password you entered is incorrect. Please double-check and try again.", 
           variant: "destructive" 
+        });
+      } else if (error.message.includes('Email not confirmed')) {
+        toast({ 
+            title: "Email verification pending", 
+            description: "Please check your inbox and click the confirmation link to activate your account.", 
+            variant: "destructive" 
         });
       }
       else {
