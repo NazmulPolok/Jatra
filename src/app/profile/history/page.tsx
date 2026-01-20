@@ -17,7 +17,8 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { format } from 'date-fns';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
 
 export default async function BookingHistoryPage() {
   const cookieStore = cookies();
@@ -43,16 +44,22 @@ export default async function BookingHistoryPage() {
 
   const isAdmin = user.email === process.env.ADMIN_EMAIL;
 
-  const { data: searches, error } = await supabase
-    .from('searches')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+  let query = supabase.from('searches').select('*');
+
+  if (!isAdmin) {
+    query = query.eq('user_id', user.id);
+  }
+
+  const { data: searches, error } = await query.order('created_at', {
+    ascending: false,
+  });
 
 
   if (error) {
     console.error('Error fetching booking history:', error);
   }
+
+  const noSearches = !searches || searches.length === 0;
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -62,13 +69,40 @@ export default async function BookingHistoryPage() {
             Booking History
           </CardTitle>
           <CardDescription>
-            {isAdmin 
-              ? <>A record of your personal searches. To view all platform searches, please visit the <Link href="/admin/bookings" className="underline">Admin Panel</Link>.</>
-              : "A record of all your past searches with Jatra."
-            }
+            {isAdmin
+              ? 'A record of all user searches on the platform.'
+              : 'A record of all your past searches with Jatra.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {isAdmin && noSearches && (
+            <Alert variant="destructive" className="mb-6">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Admin Notice: No Data Found</AlertTitle>
+              <AlertDescription>
+                <p>
+                  No search history is appearing. This is likely because your
+                  database's Row Level Security (RLS) is preventing access.
+                </p>
+                <p className="mt-2">
+                  To fix this, please run the following command in your Supabase
+                  SQL Editor to allow admins to view all searches:
+                </p>
+                <pre className="mt-2 rounded-md bg-muted p-4 text-xs font-mono">
+                  <code>
+                    {`-- Ensure RLS is enabled on the 'searches' table first.\n` +
+                     `-- Then, drop any old restrictive SELECT policies.\n\n` +
+                     `CREATE POLICY "Allow authenticated users to view all searches"\n` +
+                     `ON public.searches\n` +
+                     `FOR SELECT\n` +
+                     `TO authenticated\n` +
+                     `USING (true);`}
+                  </code>
+                </pre>
+              </AlertDescription>
+            </Alert>
+          )}
+
           <Table>
             <TableHeader>
               <TableRow>
@@ -80,7 +114,8 @@ export default async function BookingHistoryPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(searches || []).map((search: any) => (
+              {(searches && searches.length > 0) ? (
+                searches.map((search: any) => (
                 <TableRow key={search.id}>
                   <TableCell className="font-medium capitalize">
                     {search.search_type}
@@ -94,11 +129,13 @@ export default async function BookingHistoryPage() {
                     {(search.adults || 0) + (search.children || 0)}
                   </TableCell>
                 </TableRow>
-              ))}
-              {(!searches || searches.length === 0) && (
+              ))
+              ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center">
-                    You have no search history yet.
+                     {isAdmin
+                      ? 'No searches found in the database.'
+                      : 'You have no search history yet.'}
                   </TableCell>
                 </TableRow>
               )}
